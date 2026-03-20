@@ -4,7 +4,6 @@ use symphonia::core::codecs::DecoderOptions;
 use symphonia::core::formats::FormatOptions;
 use symphonia::core::io::MediaSourceStream;
 use symphonia::core::meta::MetadataOptions;
-use symphonia::core::probe::Probe;
 use std::fs::File;
 use std::path::Path;
 
@@ -21,10 +20,10 @@ pub fn decode_file(path: &Path) -> Result<DecodedAudio> {
 
 	let mss = MediaSourceStream::new(Box::new(file), Default::default());
 
-	let probe = Probe::open(mss)?
-		.format(FormatOptions::default(), MetadataOptions::default())?;
+	let probe = symphonia::default::get_probe()
+		.format(&Default::default(), mss, &FormatOptions::default(), &MetadataOptions::default())?;
 
-	let format = probe.format;
+	let mut format = probe.format;
 
 	let track = format.default_track()
 		.context("No default audio track found")?;
@@ -50,7 +49,7 @@ pub fn decode_file(path: &Path) -> Result<DecodedAudio> {
 		let decoded = decoder.decode(&packet)?;
 
 		if sample_buf.is_none() {
-			let spec = decoded.spec();
+			let spec = decoded.spec().clone();
 			let duration = decoded.capacity() as u64;
 			sample_buf = Some(SampleBuffer::<f32>::new(duration, spec));
 		}
