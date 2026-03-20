@@ -1,21 +1,22 @@
 use crate::types::PitchDetection;
-use pitch_detection::McLeod;
+use pitch_detection::detector::PitchDetector;
+use pitch_detection::detector::mcleod;
 
 const NOTE_NAMES: [&str; 12] = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
 
 pub fn detect_pitch(samples: &[f32], sample_rate: u32) -> Option<PitchDetection> {
 	let signal_len = samples.len();
-	let max_freq = sample_rate as f64 / 2.0;
+	let max_freq = sample_rate as f32 / 2.0;
 
 	// Use McLeod pitch detection method
-	let pitch = McLeod::new(signal_len, sample_rate as usize)
-		.get_pitch(samples, signal_len, sample_rate as usize, 0.5, max_freq)?;
+	let mut detector = mcleod::McLeodDetector::new(signal_len, sample_rate as usize);
+	let pitch = detector.get_pitch(samples, sample_rate as usize, 0.5, max_freq)?;
 
 	let freq = pitch.frequency;
 
 	// Convert frequency to MIDI note number
 	// A4 (440 Hz) = MIDI note 69
-	let midi_note = 12.0 * (freq / 440.0).log2() + 69.0;
+	let midi_note: f64 = 12.0 * (freq as f64 / 440.0).log2() + 69.0;
 	let midi_note_rounded = midi_note.round() as i32;
 	let cents_off = ((midi_note - midi_note_rounded as f64) * 100.0) as i32;
 
