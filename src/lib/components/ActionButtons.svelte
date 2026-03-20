@@ -3,8 +3,8 @@
 	import { processAudio } from '$lib/commands';
 	import { save } from '@tauri-apps/plugin-dialog';
 
-	$: hasFile = $audioStore.filePath !== null;
-	$: isProcessing = $audioStore.isProcessing;
+	let hasFile = $derived($audioStore.filePath !== null);
+	let isProcessing = $derived($audioStore.isProcessing);
 
 	async function handleExport() {
 		if (!$audioStore.filePath) return;
@@ -31,7 +31,7 @@
 
 <div class="actions">
 	<button class="btn-secondary" disabled={!hasFile || isProcessing}>Preview</button>
-	<button class="btn-primary" disabled={!hasFile || isProcessing} on:click={handleExport}>
+	<button class="btn-primary" disabled={!hasFile || isProcessing} onclick={handleExport}>
 		{#if isProcessing}Processing...{:else}Convert & Export{/if}
 	</button>
 </div>

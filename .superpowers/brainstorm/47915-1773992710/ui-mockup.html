@@ -1,0 +1,64 @@
+<h2>PitchSpeed UI Layout</h2>
+<p class="subtitle">Glassmorphism dark theme with real-time parameter display</p>
+
+<div class="mockup" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; color: white;">
+  <div style="text-align: center; padding: 20px; background: rgba(255,255,255,0.05); border-radius: 12px; border: 1px dashed rgba(255,255,255,0.2); margin-bottom: 20px;">
+    <div style="font-size: 14px; color: rgba(255,255,255,0.6); margin-bottom: 8px;">DROP AUDIO FILE HERE</div>
+    <div style="font-size: 12px; color: rgba(255,255,255,0.4);">MP3, WAV, M4A, OGG, FLAC, AAC</div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
+    <div style="background: rgba(255,255,255,0.08); border-radius: 12px; padding: 20px; text-align: center;">
+      <div style="font-size: 12px; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 1px;">Original Key</div>
+      <div style="font-size: 48px; font-weight: 700; background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">A4</div>
+      <div style="font-size: 14px; color: rgba(255,255,255,0.7);">+0 semitones</div>
+      <div style="font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 4px;">Confidence: 92%</div>
+    </div>
+    <div style="background: rgba(255,255,255,0.08); border-radius: 12px; padding: 20px; text-align: center;">
+      <div style="font-size: 12px; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 1px;">Target Key</div>
+      <div style="font-size: 48px; font-weight: 700; background: linear-gradient(135deg, #f093fb, #f5576c); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">C5</div>
+      <div style="font-size: 14px; color: rgba(255,255,255,0.7);">+3.5 semitones</div>
+    </div>
+  </div>
+
+  <div style="background: rgba(255,255,255,0.05); border-radius: 12px; padding: 16px; margin-bottom: 12px;">
+    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+      <span style="font-size: 13px; color: rgba(255,255,255,0.7);">Pitch Shift</span>
+      <span style="font-size: 13px; font-weight: 600;">+3.5 st</span>
+    </div>
+    <div style="height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; position: relative;">
+      <div style="position: absolute; left: 57%; top: -3px; width: 12px; height: 12px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 50%; box-shadow: 0 2px 8px rgba(102,126,234,0.5);"></div>
+      <div style="width: 57%; height: 100%; background: linear-gradient(90deg, #667eea, #764ba2); border-radius: 3px;"></div>
+    </div>
+    <div style="display: flex; justify-content: space-between; font-size: 10px; color: rgba(255,255,255,0.3); margin-top: 4px;">
+      <span>-24</span><span>0</span><span>+24</span>
+    </div>
+  </div>
+
+  <div style="background: rgba(255,255,255,0.05); border-radius: 12px; padding: 16px; margin-bottom: 20px;">
+    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+      <span style="font-size: 13px; color: rgba(255,255,255,0.7);">Tempo</span>
+      <span style="font-size: 13px; font-weight: 600;">1.25x</span>
+    </div>
+    <div style="height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; position: relative;">
+      <div style="position: absolute; left: 28%; top: -3px; width: 12px; height: 12px; background: linear-gradient(135deg, #f093fb, #f5576c); border-radius: 50%; box-shadow: 0 2px 8px rgba(245,87,108,0.5);"></div>
+      <div style="width: 28%; height: 100%; background: linear-gradient(90deg, #f093fb, #f5576c); border-radius: 3px;"></div>
+    </div>
+    <div style="display: flex; justify-content: space-between; font-size: 10px; color: rgba(255,255,255,0.3); margin-top: 4px;">
+      <span>0.1x</span><span>1.0x</span><span>5.0x</span>
+    </div>
+  </div>
+
+  <div style="display: flex; gap: 12px;">
+    <button style="flex: 1; padding: 14px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 10px; color: white; font-size: 14px; cursor: pointer;">
+      Preview [Space]
+    </button>
+    <button style="flex: 2; padding: 14px; background: linear-gradient(135deg, #667eea, #764ba2); border: none; border-radius: 10px; color: white; font-size: 14px; font-weight: 600; cursor: pointer;">
+      Convert & Export
+    </button>
+  </div>
+</div>
+
+<p style="margin-top: 20px; color: rgba(255,255,255,0.5); font-size: 13px;">
+  <strong>Design notes:</strong> Glassmorphism with subtle gradients. Large, readable numbers for pitch/tempo. Real-time updates as sliders move. Spacebar triggers preview playback.
+</p>

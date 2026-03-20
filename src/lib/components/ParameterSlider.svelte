@@ -1,11 +1,15 @@
 <script lang="ts">
-	export let label: string;
-	export let value: number;
-	export let min: number;
-	export let max: number;
-	export let step: number = 0.1;
-	export let unit: string = '';
-	export let gradient: 'primary' | 'secondary' = 'primary';
+	interface Props {
+		label: string;
+		value: number;
+		min: number;
+		max: number;
+		step?: number;
+		unit?: string;
+		gradient?: 'primary' | 'secondary';
+	}
+
+	let { label, value = $bindable(), min, max, step = 0.1, unit = '', gradient = 'primary' }: Props = $props();
 </script>
 
 <div class="slider-container">
@@ -21,8 +25,8 @@
 	.slider-header { display: flex; justify-content: space-between; margin-bottom: 12px; }
 	.label { font-size: 13px; color: var(--text-secondary); }
 	.value { font-size: 13px; font-weight: 600; }
-	.slider { -webkit-appearance: none; width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; cursor: pointer; }
-	.slider::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; cursor: pointer; }
+	.slider { -webkit-appearance: none; appearance: none; width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; cursor: pointer; }
+	.slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 18px; height: 18px; border-radius: 50%; cursor: pointer; }
 	.slider.gradient-primary::-webkit-slider-thumb { background: linear-gradient(135deg, #667eea, #764ba2); }
 	.slider.gradient-secondary::-webkit-slider-thumb { background: linear-gradient(135deg, #f093fb, #f5576c); }
 </style>

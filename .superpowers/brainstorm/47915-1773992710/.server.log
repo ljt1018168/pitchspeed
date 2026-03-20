@@ -1,0 +1,4 @@
+{"type":"server-started","port":52018,"host":"127.0.0.1","url_host":"localhost","url":"http://localhost:52018","screen_dir":"/Users/tonyliu/Codes/audio/.superpowers/brainstorm/47915-1773992710"}
+{"type":"screen-added","file":"/Users/tonyliu/Codes/audio/.superpowers/brainstorm/47915-1773992710/ui-mockup.html"}
+{"type":"screen-added","file":"/Users/tonyliu/Codes/audio/.superpowers/brainstorm/47915-1773992710/waiting.html"}
+{"type":"server-stopped","reason":"idle timeout"}

@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { audioStore, targetNote } from '$lib/stores/audio';
-	$: pitch = $audioStore.pitchDetection;
-	$: target = $targetNote;
+
+	let pitch = $derived($audioStore.pitchDetection);
+	let target = $derived($targetNote);
 </script>
 
 {#if pitch}

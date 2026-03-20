@@ -3,7 +3,7 @@
 	import { analyzeAudio } from '$lib/commands';
 	import { open } from '@tauri-apps/plugin-dialog';
 
-	let isLoading = false;
+	let isLoading = $state(false);
 
 	async function handleClick() {
 		const selected = await open({
@@ -32,7 +32,7 @@
 	}
 </script>
 
-<div class="drop-zone" class:loading={isLoading} on:click={handleClick} on:keydown={(e) => e.key === 'Enter' && handleClick()} role="button" tabindex="0">
+<div class="drop-zone" class:loading={isLoading} onclick={handleClick} onkeydown={(e) => e.key === 'Enter' && handleClick()} role="button" tabindex="0">
 	{#if isLoading}
 		<div class="spinner"></div>
 		<p>Analyzing...</p>

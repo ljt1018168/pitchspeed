@@ -5,11 +5,15 @@
 	import ParameterSlider from '$lib/components/ParameterSlider.svelte';
 	import ActionButtons from '$lib/components/ActionButtons.svelte';
 
-	let pitchShift = 0;
-	let tempoRatio = 1.0;
+	let pitchShift = $state(0);
+	let tempoRatio = $state(1.0);
 
-	$: audioStore.setPitchShift(pitchShift);
-	$: audioStore.setTempoRatio(tempoRatio);
+	$effect(() => {
+		audioStore.setPitchShift(pitchShift);
+	});
+	$effect(() => {
+		audioStore.setTempoRatio(tempoRatio);
+	});
 
 	function formatDuration(seconds: number): string {
 		const mins = Math.floor(seconds / 60);
