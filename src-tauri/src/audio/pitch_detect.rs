@@ -1,0 +1,1 @@
+// Pitch detection module - to be implemented
