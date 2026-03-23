@@ -11,19 +11,23 @@
 	"app": {
 		"windows": [
 			{
-				"title": "PitchSpeed",
+				"title": "音速调 - PitchSpeed",
 				"width": 600,
-				"height": 700,
+				"height": 720,
 				"resizable": true,
 				"minWidth": 500,
 				"minHeight": 600,
 				"decorations": true,
-				"transparent": false
+				"transparent": false,
+				"center": true,
+				"visible": true,
+				"focus": true
 			}
 		],
 		"security": {
 			"csp": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'"
-		}
+		},
+		"withGlobalTauri": true
 	},
 	"bundle": {
 		"active": true,
@@ -37,11 +41,12 @@
 		],
 		"windows": {
 			"wix": {
-				"language": "en-US"
+				"language": "zh-CN"
 			}
 		},
 		"macOS": {
 			"minimumSystemVersion": "10.13"
 		}
-	}
+	},
+	"plugins": {}
 }
