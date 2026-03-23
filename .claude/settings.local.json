@@ -56,7 +56,11 @@
       "Bash(~/.cargo/bin/cargo fix:*)",
       "Bash(pkill -f PitchSpeed)",
       "Bash(~/.cargo/bin/cargo build:*)",
-      "Bash(cat ~/.cargo/registry/src/*/mp3lame-encoder-*/src/lib.rs)"
+      "Bash(cat ~/.cargo/registry/src/*/mp3lame-encoder-*/src/lib.rs)",
+      "Bash(gh auth:*)",
+      "Bash(brew install:*)",
+      "Bash(rustup target:*)",
+      "Bash(~/.cargo/bin/rustup target:*)"
     ]
   }
 }
