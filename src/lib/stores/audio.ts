@@ -1,6 +1,8 @@
 import { writable, derived } from 'svelte/store';
 import type { AudioInfo, PitchDetection } from '$lib/commands';
 
+export type ExportFormat = 'wav' | 'mp3';
+
 export interface AudioState {
 	filePath: string | null;
 	fileName: string | null;
@@ -8,6 +10,7 @@ export interface AudioState {
 	pitchDetection: PitchDetection | null;
 	pitchShift: number;
 	tempoRatio: number;
+	exportFormat: ExportFormat;
 	isProcessing: boolean;
 	error: string | null;
 }
@@ -20,6 +23,7 @@ function createAudioStore() {
 		pitchDetection: null,
 		pitchShift: 0,
 		tempoRatio: 1.0,
+		exportFormat: 'wav',
 		isProcessing: false,
 		error: null
 	};
@@ -38,6 +42,8 @@ function createAudioStore() {
 			update((s) => ({ ...s, pitchShift: value })),
 		setTempoRatio: (value: number) =>
 			update((s) => ({ ...s, tempoRatio: value })),
+		setExportFormat: (format: ExportFormat) =>
+			update((s) => ({ ...s, exportFormat: format })),
 		setProcessing: (isProcessing: boolean) =>
 			update((s) => ({ ...s, isProcessing })),
 		setError: (error: string | null) =>
@@ -47,6 +53,12 @@ function createAudioStore() {
 }
 
 export const audioStore = createAudioStore();
+
+// 音名映射（英文 -> 中文）
+const NOTE_NAMES_CN: Record<string, string> = {
+	'C': 'C', 'C#': 'C#', 'D': 'D', 'D#': 'D#', 'E': 'E', 'F': 'F',
+	'F#': 'F#', 'G': 'G', 'G#': 'G#', 'A': 'A', 'A#': 'A#', 'B': 'B'
+};
 
 export const targetNote = derived(audioStore, ($audio) => {
 	if (!$audio.pitchDetection) return null;

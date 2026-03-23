@@ -1,17 +1,20 @@
 use anyhow::{Context, Result};
 use hound::{WavSpec, WavWriter};
+use mp3lame_encoder::{Builder, FlushGap, InterleavedPcm, MonoPcm, Bitrate, Quality};
+use std::fs::File;
+use std::io::BufWriter;
 use std::path::Path;
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum ExportFormat {
+	Wav,
+	Mp3,
+}
 
 pub struct ExportOptions {
 	pub format: ExportFormat,
 	pub sample_rate: u32,
 	pub bit_depth: u16,
-}
-
-#[derive(Debug, Clone, Copy)]
-pub enum ExportFormat {
-	Wav,
-	Mp3,
 }
 
 pub fn encode_wav(
@@ -46,32 +49,75 @@ pub fn encode_wav(
 	Ok(())
 }
 
-pub fn normalize_samples(
+pub fn encode_mp3(
 	samples: &[f32],
-	target_sample_rate: u32,
-	source_sample_rate: u32,
-) -> Vec<f32> {
-	if target_sample_rate == source_sample_rate {
-		return samples.to_vec();
+	channels: u16,
+	sample_rate: u32,
+	output_path: &Path,
+) -> Result<()> {
+	let file = File::create(output_path)
+		.with_context(|| "Failed to create MP3 file")?;
+	let mut writer = BufWriter::new(file);
+
+	// Build MP3 encoder
+	let mut builder = Builder::new()
+		.ok_or_else(|| anyhow::anyhow!("Failed to create LAME builder"))?;
+
+	builder.set_num_channels(channels as u8)
+		.map_err(|e| anyhow::anyhow!("Failed to set channels: {:?}", e))?;
+	builder.set_sample_rate(sample_rate)
+		.map_err(|e| anyhow::anyhow!("Failed to set sample rate: {:?}", e))?;
+	builder.set_brate(Bitrate::Kbps320)
+		.map_err(|e| anyhow::anyhow!("Failed to set bitrate: {:?}", e))?;
+	builder.set_quality(Quality::Best)
+		.map_err(|e| anyhow::anyhow!("Failed to set quality: {:?}", e))?;
+
+	let mut mp3_encoder = builder.build()
+		.map_err(|e| anyhow::anyhow!("Failed to build MP3 encoder: {:?}", e))?;
+
+	// Prepare output buffer
+	let mut mp3_output = Vec::with_capacity(mp3lame_encoder::max_required_buffer_size(samples.len()));
+
+	// Encode based on channel count
+	if channels == 1 {
+		// Mono: use f32 samples directly
+		let input = MonoPcm(samples);
+		mp3_encoder.encode_to_vec(input, &mut mp3_output)
+			.map_err(|e| anyhow::anyhow!("MP3 encoding error: {:?}", e))?;
+	} else {
+		// Stereo or more: convert to interleaved i16
+		let samples_i16: Vec<i16> = samples
+			.iter()
+			.map(|&s| (s * 32767.0).clamp(-32768.0, 32767.0) as i16)
+			.collect();
+		let input = InterleavedPcm(&samples_i16);
+		mp3_encoder.encode_to_vec(input, &mut mp3_output)
+			.map_err(|e| anyhow::anyhow!("MP3 encoding error: {:?}", e))?;
 	}
 
-	// Simple linear interpolation resampling
-	let ratio = source_sample_rate as f64 / target_sample_rate as f64;
-	let output_len = (samples.len() as f64 / ratio) as usize;
-	let mut output = Vec::with_capacity(output_len);
+	// Flush remaining data
+	mp3_encoder.flush_to_vec::<FlushGap>(&mut mp3_output)
+		.map_err(|e| anyhow::anyhow!("MP3 flush error: {:?}", e))?;
 
-	for i in 0..output_len {
-		let src_pos = i as f64 * ratio;
-		let src_idx = src_pos as usize;
-		let frac = src_pos - src_idx as f64;
+	// Write to file
+	use std::io::Write;
+	writer.write_all(&mp3_output)
+		.with_context(|| "Failed to write MP3 data")?;
 
-		let sample = if src_idx + 1 < samples.len() {
-			samples[src_idx] * (1.0 - frac as f32) + samples[src_idx + 1] * frac as f32
-		} else {
-			samples[src_idx.min(samples.len() - 1)]
-		};
-		output.push(sample);
+	writer.flush()
+		.with_context(|| "Failed to flush MP3 file")?;
+
+	Ok(())
+}
+
+pub fn encode_audio(
+	samples: &[f32],
+	channels: u16,
+	options: &ExportOptions,
+	output_path: &Path,
+) -> Result<()> {
+	match options.format {
+		ExportFormat::Wav => encode_wav(samples, channels, options, output_path),
+		ExportFormat::Mp3 => encode_mp3(samples, channels, options.sample_rate, output_path),
 	}
-
-	output
 }

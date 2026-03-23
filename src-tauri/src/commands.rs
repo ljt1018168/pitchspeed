@@ -1,4 +1,5 @@
-use crate::audio::{decode_file, detect_pitch, encode_wav, ExportOptions, ExportFormat};
+use crate::audio::{decode_file, detect_pitch, encode_audio, ExportFormat, ExportOptions};
+use crate::audio::processor::process_audio as apply_stretch;
 use crate::types::{AudioInfo, PitchDetection};
 use std::path::Path;
 
@@ -51,12 +52,11 @@ pub fn process_audio(
 	let decoded = decode_file(input)
 		.map_err(|e| format!("Failed to decode: {}", e))?;
 
-	// For now, skip pitch/tempo processing (signalsmith-stretch needs integration)
-	// Just re-encode the audio
-	let _ = (pitch_semitones, tempo_ratio); // Suppress unused warnings
+	// Apply pitch shift and time stretch
+	let processed_samples = apply_stretch(&decoded, pitch_semitones, tempo_ratio);
 
 	let export_format = match format.to_lowercase().as_str() {
-		"wav" => ExportFormat::Wav,
+		"mp3" => ExportFormat::Mp3,
 		_ => ExportFormat::Wav,
 	};
 
@@ -66,11 +66,14 @@ pub fn process_audio(
 		bit_depth: 24,
 	};
 
-	encode_wav(&decoded.samples, decoded.channels, &export_options, output)
+	encode_audio(&processed_samples, decoded.channels, &export_options, output)
 		.map_err(|e| format!("Failed to encode: {}", e))?;
 
+	// Calculate new duration after tempo change
+	let new_duration = decoded.duration_secs / tempo_ratio as f64;
+
 	Ok(AudioInfo {
-		duration_secs: decoded.duration_secs,
+		duration_secs: new_duration,
 		sample_rate: decoded.sample_rate,
 		channels: decoded.channels,
 		bit_depth: Some(24),
@@ -85,5 +88,9 @@ pub fn preview_audio(
 	_tempo_ratio: f32,
 ) -> Result<(), String> {
 	// Placeholder for preview functionality
+	// In a full implementation, this would:
+	// 1. Decode audio
+	// 2. Process with pitch/tempo changes
+	// 3. Stream to audio output device
 	Ok(())
 }

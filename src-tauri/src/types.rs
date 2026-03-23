@@ -15,15 +15,3 @@ pub struct PitchDetection {
 	pub semitone_offset: i32,
 	pub confidence: f32,
 }
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ProcessingParams {
-	pub pitch_semitones: f32,
-	pub tempo_ratio: f32,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ProcessingProgress {
-	pub stage: String,
-	pub progress: f32,
-}
